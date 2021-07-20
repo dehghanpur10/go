@@ -46,5 +46,24 @@ func main() {
 	collection := database.Collection("user")
 	_ = collection
 
-	fmt.Println(databaseName)
+	//creat collection by schema validator
+	jsonSchema := bson.M{
+		"bsonType": "object",
+		"required": []string{"name", "age"},
+		"properties": bson.M{
+			"name": bson.M{
+				"bsonType":    "string",
+				"description": "the name of the user"},
+			"age": bson.M{
+				"bsonType":    "int",
+				"minimum":     18,
+				"description": "the age of the user"},
+		},
+	}
+	validator := bson.M{"$jsonSchema": jsonSchema}
+	opts := options.CreateCollection().SetValidator(validator)
+	err = database.CreateCollection(ctx, "testUser", opts)
+	if err != nil {
+		fmt.Println("error")
+	}
 }
