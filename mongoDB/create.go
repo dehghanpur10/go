@@ -35,7 +35,7 @@ func main() {
 	//get certain database
 	database := client.Database("test")
 	//get certain collection in this database
-	collection := database.Collection("user")
+	collection := database.Collection("newUser")
 	_ = collection
 
 	//how to work by go data structure in mongoDB
