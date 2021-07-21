@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
@@ -38,39 +38,37 @@ func main() {
 	collection := database.Collection("user")
 	_ = collection
 
-	//how to work by go data structure in mongoDB
-	type User struct {
-		ID        primitive.ObjectID `bson:"_id,omitempty"`
-		Firstname string             `bson:"firstname,omitempty"`
-		Lastname  string             `bson:"lastname,omitempty"`
-		Tags      []string           `bson:"tags,omitempty"`
-		Age       int                `bson:"age,omitempty"`
+	index := []mongo.IndexModel{
+		{
+			Keys: bson.D{{"firstname", "text"}, {"lastname", "text"}},
+			Options: options.Index().SetUnique(true).SetWeights(bson.D{
+				{"firstname", 2},
+				{"lastname", 5},
+			}), // set unique
+		},
+		{
+			Keys: bson.D{{"age", 1}},
+			Options: options.Index().SetPartialFilterExpression(bson.D{{ // create partial filter index
+				"age",
+				bson.D{{"$gt", 20}},
+			},
+			}),
+		},
+		{
+			Keys:    bson.D{{"firstname", 1}},
+			Options: options.Index().SetExpireAfterSeconds(2),
+		},
 	}
-	var user1 User = User{
-		Firstname: "hamid",
-		Lastname:  "dehghanpour",
-		Tags:      []string{"a", "b"},
-		Age:       15,
-	}
-	var user2 User = User{
-		Firstname: "ali",
-		Lastname:  "dehghanpour",
-		Tags:      []string{"a", "b"},
-		Age:       20,
-	}
-	//create operation
-
-	//create one item
-	user, err := collection.InsertOne(ctx, user1)
+	many, err := collection.Indexes().CreateMany(ctx, index)
 	if err != nil {
-		fmt.Println(err)
-	}
-	_ = user
 
-	//create many item
-	var usersInput []interface{}
-	//usersInput = append(usersInput, user1)
-	usersInput = append(usersInput, user2)
-	users, _ := collection.InsertMany(ctx, usersInput)
-	_ = users
+	}
+	fmt.Println(many)
+
+	//find document by text index
+	user, _ := collection.Find(ctx, bson.D{{"$text", bson.D{{"$search", "dehghanpour"}}}})
+	var a []interface{}
+	user.All(ctx, &a)
+	fmt.Println(a)
+
 }
