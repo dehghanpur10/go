@@ -52,14 +52,20 @@ func main() {
 
 	//find one item
 	var fetchUser User
-	fetch := collection.FindOne(ctx, bson.M{"firstname": "mohammad"})
+	fetch := collection.FindOne(ctx, bson.M{"firstname": "hamid"})
+	err = fetch.Decode(&fetchUser)
+	fmt.Println(fetchUser)
 	if err = fetch.Decode(&fetchUser); err != nil {
 		panic(err)
 	}
 	//find many item
 	var fetchUsers []User
 	o := options.Find()
+	o.SetProjection(bson.D{{"_id", 0}, {"firstname", 1}})
 	o.SetLimit(2)
+	o.SetSkip(1)
+
+	o.SetSort(bson.D{{"age", -1}})
 
 	userFind, _ := collection.Find(ctx, bson.D{
 		// aga > 10 && age < 21 && (firstname == hamid && firstname == mohammad)
@@ -70,8 +76,9 @@ func main() {
 			bson.D{{"firstname", "hamid"}},
 		}},
 	}, o)
+
 	if err = userFind.All(ctx, &fetchUsers); err != nil {
-		panic(err)
 	}
+	fmt.Println(fetchUsers)
 
 }
