@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
@@ -70,7 +69,7 @@ func Connect() (*mongo.Client, *mongo.Database, *mongo.Collection) {
 	//get certain database
 	database := client.Database("testDatabase")
 	//get certain collection in this database
-	collection := database.Collection("user")
+	collection := database.Collection("a")
 	_ = collection
 	return client, database, collection
 }
