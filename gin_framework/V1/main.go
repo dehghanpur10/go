@@ -2,6 +2,7 @@ package main
 
 import (
 	_ "V1/docs"
+	"V1/routers/authRouter"
 	"V1/routers/videoRouter"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -26,6 +27,7 @@ func main() {
 	api := server.Group("api/V1")
 	//set router
 	videoRouter.SetVideoRouter(api)
+	authRouter.SetAuthRouter(api)
 	server.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	//run server
 	err := server.Run(":8080")
