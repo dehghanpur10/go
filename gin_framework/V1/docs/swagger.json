@@ -1,0 +1,22 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This is a restapi for video management",
+        "title": "test gin framework",
+        "contact": {
+            "name": "mohammad dehghanpour",
+            "email": "m.dehghanpour"
+        },
+        "version": "1.0"
+    },
+    "host": "http://localhost:8080",
+    "basePath": "/api/V1",
+    "paths": {},
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}
