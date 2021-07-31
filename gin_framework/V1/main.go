@@ -2,6 +2,7 @@ package main
 
 import (
 	_ "V1/docs"
+	"V1/repository"
 	"V1/routers/authRouter"
 	"V1/routers/videoRouter"
 	"fmt"
@@ -30,9 +31,13 @@ func main() {
 	authRouter.SetAuthRouter(api)
 	server.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	//run server
-	err := server.Run(":8080")
+	err := repository.NewClient("mongodb://localhost:27017")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	err = server.Run(":8080")
 	if err != nil {
 		fmt.Println("error occur in run server")
 	}
-
 }
