@@ -6,7 +6,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var Client ClientHelper
+var Database DatabaseHelper
 
 type DatabaseHelper interface {
 	Collection(name string) *mongo.Collection
@@ -22,12 +22,13 @@ type mongoDatabase struct {
 	db *mongo.Database
 }
 
-func NewClient(url string) error {
-	c, err := mongo.Connect(context.TODO(), options.Client().ApplyURI("mongodb://localhost:27017"))
+func NewDatabase(url string, databaseName string) error {
+	c, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(url))
 	if err != nil {
 		return err
 	}
-	Client = &mongoClient{client: c}
+	client := mongoClient{client: c}
+	Database = client.Database(databaseName)
 	return nil
 }
 

@@ -31,7 +31,7 @@ func main() {
 	authRouter.SetAuthRouter(api)
 	server.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	//run server
-	err := repository.NewClient("mongodb://localhost:27017")
+	err := repository.NewDatabase("mongodb://localhost:27017", "video")
 	if err != nil {
 		fmt.Println(err)
 		return
