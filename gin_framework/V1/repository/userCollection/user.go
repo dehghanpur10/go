@@ -4,12 +4,13 @@ import (
 	"V1/models"
 	"V1/repository"
 	"context"
+	"errors"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 const collectionName = "users"
 
-type UserDatabase interface {
+type UserCollection interface {
 	Aggregate(ctx context.Context, pipeline interface{}) (*models.User, error)
 	InsertOne(ctx context.Context, user interface{}) (primitive.ObjectID, error)
 	UpdateOne(ctx context.Context, filter interface{}, update interface{}) error
@@ -18,7 +19,7 @@ type userDatabase struct {
 	db repository.DatabaseHelper
 }
 
-func NewUserDatabase(db repository.DatabaseHelper) UserDatabase {
+func NewUserDatabase(db repository.DatabaseHelper) UserCollection {
 	return &userDatabase{
 		db: db,
 	}
@@ -34,10 +35,14 @@ func (u *userDatabase) Aggregate(ctx context.Context, pipeline interface{}) (*mo
 	if err != nil {
 		return nil, err
 	}
+	if len(user) == 0 {
+		return nil, errors.New("user not found")
+	}
 	return user[0], nil
 }
 
 func (u *userDatabase) InsertOne(ctx context.Context, user interface{}) (primitive.ObjectID, error) {
+
 	newUser, err := u.db.Collection(collectionName).InsertOne(ctx, user)
 	if err != nil {
 		return primitive.NilObjectID, err
