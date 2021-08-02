@@ -1,0 +1,91 @@
+basePath: /api/V1
+definitions:
+  entity.User:
+    properties:
+      age:
+        type: integer
+      firstname:
+        type: string
+      lastname:
+        type: string
+    required:
+    - firstname
+    - lastname
+    type: object
+  entity.UserLogIn:
+    properties:
+      firstname:
+        type: string
+      lastname:
+        type: string
+    required:
+    - firstname
+    - lastname
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: m.dehghanpour
+    name: mohammad dehghanpour
+  description: This is a restapi for video management
+  title: test gin framework
+  version: "1.0"
+paths:
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: logIn endpoint
+      parameters:
+      - description: user info for signIN
+        in: body
+        name: userInfo
+        required: true
+        schema:
+          $ref: '#/definitions/entity.UserLogIn'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.User'
+      summary: logIn endpoint
+      tags:
+      - Authentication
+  /signIn:
+    post:
+      consumes:
+      - application/json
+      description: signIn endpoint
+      parameters:
+      - description: user info for signIN
+        in: body
+        name: userInfo
+        required: true
+        schema:
+          $ref: '#/definitions/entity.User'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.User'
+      summary: signIn endpoint
+      tags:
+      - Authentication
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
