@@ -19,7 +19,7 @@ func main() {
 }
 func createTableInput() *dynamodb.CreateTableInput {
 	// Create table Movies
-	tableName := "Game"
+	tableName := "User"
 
 	return &dynamodb.CreateTableInput{
 		AttributeDefinitions: []*dynamodb.AttributeDefinition{
