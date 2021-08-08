@@ -48,6 +48,9 @@ func globalSecondaryIndex(indexName, partitionKEy, sortKey string) []*dynamodb.G
 						KeyType:       aws.String("RANGE"),
 					},
 				},
+				Projection: &dynamodb.Projection{
+					ProjectionType: aws.String("ALL"),
+				},
 			},
 		},
 	}
