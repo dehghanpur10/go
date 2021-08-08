@@ -22,22 +22,52 @@ func createTableInput() *dynamodb.CreateTableInput {
 	tableName := "User"
 
 	return &dynamodb.CreateTableInput{
-		AttributeDefinitions: []*dynamodb.AttributeDefinition{
-			{
-				AttributeName: aws.String("id"),
-				AttributeType: aws.String("S"),
-			},
-		},
-		KeySchema: []*dynamodb.KeySchemaElement{
-			{
-				AttributeName: aws.String("id"),
-				KeyType:       aws.String("HASH"),
-			},
-		},
+		LocalSecondaryIndexes: localSecondaryIndex(),
+		AttributeDefinitions:  attributeDefinitions(),
+		KeySchema:             keySchemaBySortKey("name"),
 		ProvisionedThroughput: &dynamodb.ProvisionedThroughput{
 			ReadCapacityUnits:  aws.Int64(10),
 			WriteCapacityUnits: aws.Int64(10),
 		},
 		TableName: aws.String(tableName),
+	}
+}
+func attributeDefinitions() []*dynamodb.AttributeDefinition {
+	return []*dynamodb.AttributeDefinition{
+		{
+			AttributeName: aws.String("id"),
+			AttributeType: aws.String("S"),
+		},
+		{
+			AttributeName: aws.String("name"),
+			AttributeType: aws.String("S"),
+		},
+		{
+			AttributeName: aws.String("age"),
+			AttributeType: aws.String("N"),
+		},
+	}
+}
+func keySchemaBySortKey(sortKey string) []*dynamodb.KeySchemaElement {
+	return []*dynamodb.KeySchemaElement{
+		{
+			AttributeName: aws.String("id"),
+			KeyType:       aws.String("HASH"),
+		},
+		{
+			AttributeName: aws.String(sortKey),
+			KeyType:       aws.String("RANGE"),
+		},
+	}
+}
+func localSecondaryIndex() []*dynamodb.LocalSecondaryIndex {
+	return []*dynamodb.LocalSecondaryIndex{
+		{
+			IndexName: aws.String("age-index"),
+			KeySchema: keySchemaBySortKey("age"),
+			Projection: &dynamodb.Projection{
+				ProjectionType: aws.String("ALL"),
+			},
+		},
 	}
 }
