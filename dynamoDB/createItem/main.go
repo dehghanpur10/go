@@ -13,23 +13,27 @@ func main()  {
 	dynamoClient := createDynamoDB.Dynamo()
 	user := data.User{
 		Id: "2",
-		Name: "a",
+		Name: "mohammad",
 		Age: 22,
 	}
 	av, err := dynamodbattribute.MarshalMap(user)
+	_ =av
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
+
 	input := &dynamodb.PutItemInput{
-		Item:      av,
+		Item:    av,
 		TableName: aws.String(TableName),
 		ReturnConsumedCapacity: aws.String("TOTAL"),
 		ReturnValues: aws.String("ALL_OLD"),
+		ConditionExpression: aws.String("attribute_not_exists(id)"),
 	}
 	a, err := dynamoClient.PutItem(input)
 	if err != nil {
 		fmt.Println(err)
+		return
 	}
 	fmt.Println(a)
 
