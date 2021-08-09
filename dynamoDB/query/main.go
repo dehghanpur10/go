@@ -16,16 +16,17 @@ func main()  {
 		fmt.Println(err)
 		return
 	}
-	scanInput := &dynamodb.ScanInput{
+	queryInput := &dynamodb.QueryInput{
 		ExpressionAttributeValues: expr.Values(),
 		ExpressionAttributeNames: expr.Names(),
-		FilterExpression: expr.Filter(),
+		KeyConditionExpression: expr.Filter(),
 		IndexName: aws.String("age-index"),
 		TableName: aws.String("User"),
 	}
-	scan, err := dynamoClient.Scan(scanInput)
+	query, err := dynamoClient.Query(queryInput)
 	if err != nil {
+		fmt.Println(err)
 		return
 	}
-	fmt.Println(scan)
+	fmt.Println(query)
 }
